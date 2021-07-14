@@ -42,6 +42,19 @@ if numEvents > 0 then
             evStr = redis.call("HGET", KEYS[4], evId)
             if evStr ~= nil then
                 if pcall(function () ev = cjson.decode(evStr) end) then
+
+                    -- Ensure maxRetries and _numRetries properties
+                    if ev.maxRetries == nil or ev._numRetries == nil then
+                        if ev.maxRetries == nil then
+                            ev.maxRetries = 0
+                        end
+                        if ev._numRetries == nil then
+                            ev._numRetries = 0
+                        end
+                        redis.call("HSET", KEYS[4], evId, cjson.encode(ev))
+                    end
+
+
                     if ev._numRetries < ev.maxRetries then
                         ev._numRetries = ev._numRetries + 1
                         redis.call("ZADD", KEYS[3], now, evId)
