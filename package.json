@@ -17,15 +17,13 @@
   },
   "dependencies": {
     "@palringo/logger": "^1.3.2",
-    "bluebird": "^3.7.2",
-    "debug": "~4.3.2",
     "ioredis": "~4.27.6",
-    "lured": "~1.0.3",
     "underscore": "~1.13.1",
     "uuid": "~8.3.2"
   },
   "devDependencies": {
     "@palringo/eslint-config": "^1.6.2",
+    "debug": "~4.3.2",
     "eslint": "^6.8.0",
     "eslint-plugin-classes": "^0.1.1",
     "eslint-plugin-promise": "^4.2.1",

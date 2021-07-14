@@ -42,20 +42,7 @@ if numEvents > 0 then
             evStr = redis.call("HGET", KEYS[4], evId)
             if evStr ~= nil then
                 if pcall(function () ev = cjson.decode(evStr) end) then
-
-                    -- Ensure maxRetries and _numRetries properties
-                    if ev.maxRetries == nil or ev._numRetries == nil then
-                        if ev.maxRetries == nil then
-                            ev.maxRetries = 0
-                        end
-                        if ev._numRetries == nil then
-                            ev._numRetries = 0
-                        end
-                        redis.call("HSET", KEYS[4], evId, cjson.encode(ev))
-                    end
-
-
-                    if ev._numRetries < ev.maxRetries then
+                    if ev._numRetries ~= nil and ev._numRetries < ev.maxRetries then
                         ev._numRetries = ev._numRetries + 1
                         redis.call("ZADD", KEYS[3], now, evId)
                         redis.call("HSET", KEYS[4], evId, cjson.encode(ev))
@@ -114,7 +101,7 @@ end
 
 numEvents = redis.call("ZCARD", KEYS[3])
 if numEvents == 0 then
-    redis.call("HDEL", KEYS[1], "expiresAt")
+    redis.call("DEL", KEYS[1])
 else
     local notify = true
     local nexp = tonumber(redis.call("ZRANGE", KEYS[3], 0, 0, "WITHSCORES")[2])
